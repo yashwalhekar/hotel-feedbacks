@@ -4,6 +4,20 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { submitFeedback } from "@/service/feedbackservice";
 import API from "@/service/api";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Container,
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Select,
+  MenuItem,
+  Button,
+  Stack,
+  Rating,
+  CircularProgress,
+} from "@mui/material";
 
 export default function FeedbackPage() {
   const { slug } = useParams();
@@ -14,10 +28,10 @@ export default function FeedbackPage() {
     customerName: "",
     customerMobile: "",
     orderType: "DINE-IN",
-    overallRating: 5,
-    foodRating: 5,
-    serviceRating: 5,
-    ambienceRating: 5,
+    overallRating: 0,
+    foodRating: 0,
+    serviceRating: 0,
+    ambienceRating: 0,
     comment: "",
   });
 
@@ -32,7 +46,6 @@ export default function FeedbackPage() {
         const { data } = await API.get(`/shops/slug/${slug}`);
         setShop(data.shop);
       } catch (error) {
-        console.error(error);
         setShop(null);
       } finally {
         setLoading(false);
@@ -42,17 +55,12 @@ export default function FeedbackPage() {
     fetchShop();
   }, [slug]);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]:
-        e.target.type === "number" ? Number(e.target.value) : e.target.value,
-    });
+  const handleChange = (name, value) => {
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       await submitFeedback(slug, formData);
       setSubmitted(true);
@@ -61,129 +69,237 @@ export default function FeedbackPage() {
     }
   };
 
-  if (loading) return <div className="p-10">Loading...</div>;
-  if (!shop) return <div className="p-10">Invalid QR Code</div>;
+  if (loading)
+    return (
+      <Container
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          background: "linear-gradient(135deg, #f8f9fa, #eef2f3)",
+        }}
+      >
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <CircularProgress size={60} thickness={4} />
+        </motion.div>
+
+        <Typography mt={3} color="text.secondary">
+          Preparing your experience...
+        </Typography>
+      </Container>
+    );
+  if (!shop)
+    return (
+      <Container sx={{ mt: 10 }}>
+        <Typography variant="h6" align="center">
+          Invalid QR Code
+        </Typography>
+      </Container>
+    );
 
   if (submitted)
     return (
-      <div className="flex items-center justify-center h-screen">
-        <h2 className="text-2xl font-bold text-green-600">
-          Thank You For Your Feedback ❤️
-        </h2>
-      </div>
-    );
-
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 p-4">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md"
+      <Container
+        sx={{
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          background: "linear-gradient(135deg, #f8f9fa, #eef2f3)",
+        }}
       >
-        <h2 className="text-2xl font-bold mb-4 text-center">
-          {shop.shopName} Feedback
-        </h2>
-
-        {/* Name */}
-        <input
-          type="text"
-          name="customerName"
-          placeholder="Your Name"
-          className="w-full border p-2 mb-3 rounded"
-          onChange={handleChange}
-          required
-        />
-
-        {/* Mobile */}
-        <input
-          type="text"
-          name="customerMobile"
-          placeholder="Mobile Number"
-          className="w-full border p-2 mb-3 rounded"
-          onChange={handleChange}
-        />
-
-        {/* Order Type */}
-        <select
-          name="orderType"
-          className="w-full border p-2 mb-3 rounded"
-          onChange={handleChange}
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 120 }}
+          style={{ textAlign: "center" }}
         >
-          <option value="DINE-IN">Dine In</option>
-          <option value="TAKEAWAY">Takeaway</option>
-        </select>
+          <motion.div
+            initial={{ rotate: -20 }}
+            animate={{ rotate: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Typography variant="h4" fontWeight={700} color="success.main">
+              🎉 Thank You!
+            </Typography>
+          </motion.div>
 
-        {/* Overall Rating */}
-        <label className="block mb-1">Overall Rating</label>
-        <select
-          name="overallRating"
-          className="w-full border p-2 mb-3 rounded"
-          onChange={handleChange}
+          <Typography mt={2} color="text.secondary">
+            Your feedback means a lot to us.
+          </Typography>
+        </motion.div>
+      </Container>
+    );
+  return (
+    <Container
+      maxWidth="sm"
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        py: 4,
+        background: "linear-gradient(135deg, #f8f9fa, #eef2f3)",
+      }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <Card
+          sx={{
+            width: "100%",
+            borderRadius: 5,
+            boxShadow: "0 15px 40px rgba(0,0,0,0.08)",
+            backdropFilter: "blur(10px)",
+            backgroundColor: "#ffffff",
+          }}
         >
-          {[5, 4, 3, 2, 1].map((num) => (
-            <option key={num} value={num}>
-              {num} ⭐
-            </option>
-          ))}
-        </select>
+          <CardContent sx={{ p: 5 }}>
+            {/* Hotel Name */}
+            <Typography
+              variant="h5"
+              align="center"
+              sx={{
+                fontWeight: 600,
 
-        {/* Food Rating */}
-        <label className="block mb-1">Food Rating</label>
-        <select
-          name="foodRating"
-          className="w-full border p-2 mb-3 rounded"
-          onChange={handleChange}
-        >
-          {[5, 4, 3, 2, 1].map((num) => (
-            <option key={num} value={num}>
-              {num} ⭐
-            </option>
-          ))}
-        </select>
+                background: "linear-gradient(90deg,#000,#444)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                mb: 1,
+              }}
+            >
+              {shop.shopName}
+            </Typography>
 
-        {/* Service Rating */}
-        <label className="block mb-1">Service Rating</label>
-        <select
-          name="serviceRating"
-          className="w-full border p-2 mb-3 rounded"
-          onChange={handleChange}
-        >
-          {[5, 4, 3, 2, 1].map((num) => (
-            <option key={num} value={num}>
-              {num} ⭐
-            </option>
-          ))}
-        </select>
+            {/* Tagline */}
+            <Typography
+              variant="subtitle2"
+              align="center"
+              sx={{
+                fontStyle: "italic",
+                color: "text.secondary",
+                mb: 4,
+              }}
+            >
+              “Where Every Guest Experience Matters.”
+            </Typography>
 
-        {/* Ambience Rating */}
-        <label className="block mb-1">Ambience Rating</label>
-        <select
-          name="ambienceRating"
-          className="w-full border p-2 mb-3 rounded"
-          onChange={handleChange}
-        >
-          {[5, 4, 3, 2, 1].map((num) => (
-            <option key={num} value={num}>
-              {num} ⭐
-            </option>
-          ))}
-        </select>
+            <form onSubmit={handleSubmit}>
+              <Stack spacing={3}>
+                <TextField
+                  label="Guest Name"
+                  fullWidth
+                  required
+                  variant="outlined"
+                  onChange={(e) => handleChange("customerName", e.target.value)}
+                />
 
-        {/* Comment */}
-        <textarea
-          name="comment"
-          placeholder="Your feedback..."
-          rows={4}
-          className="w-full border p-2 mb-3 rounded"
-          onChange={handleChange}
-        />
+                <TextField
+                  label="Mobile Number"
+                  fullWidth
+                  variant="outlined"
+                  onChange={(e) =>
+                    handleChange("customerMobile", e.target.value)
+                  }
+                />
 
-        <button
-          type="submit"
-          className="w-full bg-black text-white py-2 rounded hover:bg-gray-800"
-        >
-          Submit Feedback
-        </button>
-      </form>
-    </div>
+                <Select
+                  value={formData.orderType}
+                  fullWidth
+                  onChange={(e) => handleChange("orderType", e.target.value)}
+                  sx={{ borderRadius: 2 }}
+                >
+                  <MenuItem value="DINE-IN">Dine In</MenuItem>
+                  <MenuItem value="TAKEAWAY">Takeaway</MenuItem>
+                </Select>
+
+                {/* Ratings Section */}
+                <Stack
+                  spacing={3}
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    backgroundColor: "#fafafa",
+                  }}
+                >
+                  {[
+                    { label: "Overall Experience", name: "overallRating" },
+                    { label: "Food Quality", name: "foodRating" },
+                    { label: "Service", name: "serviceRating" },
+                    { label: "Ambience", name: "ambienceRating" },
+                  ].map((item) => (
+                    <Stack key={item.name} spacing={1}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                        {item.label}
+                      </Typography>
+                      <Rating
+                        size="large"
+                        value={formData[item.name]}
+                        onChange={(e, newValue) =>
+                          handleChange(item.name, newValue)
+                        }
+                        sx={{
+                          fontSize: "2rem",
+                          transition: "all 0.3s ease",
+                          "& .MuiRating-icon": {
+                            transition: "all 0.3s ease",
+                          },
+                          "& .MuiRating-iconHover": {
+                            transform: "scale(1.3)",
+                            color: "#D4AF37", // premium gold
+                          },
+                          "& .MuiRating-iconFilled": {
+                            color: "#D4AF37",
+                          },
+                        }}
+                      />
+                    </Stack>
+                  ))}
+                </Stack>
+
+                <TextField
+                  label="Share your experience..."
+                  multiline
+                  rows={4}
+                  fullWidth
+                  variant="outlined"
+                  onChange={(e) => handleChange("comment", e.target.value)}
+                />
+                <motion.div whileTap={{ scale: 0.95 }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    size="small"
+                    fullWidth
+                    sx={{
+                      py: 1.6,
+                      borderRadius: 3,
+                      textTransform: "none",
+                      fontWeight: 700,
+                      fontSize: "1rem",
+                      background: "linear-gradient(90deg, #000000, #333333)",
+                      boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
+                      "&:hover": {
+                        background: "linear-gradient(90deg, #111111, #444444)",
+                      },
+                    }}
+                  >
+                    Submit Feedback
+                  </Button>
+                </motion.div>
+              </Stack>
+            </form>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </Container>
   );
 }
