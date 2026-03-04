@@ -29,7 +29,7 @@ export default function FeedbackPage() {
 
     const fetchShop = async () => {
       try {
-        const { data } = await API.get(`/api/shops/slug/${slug}`);
+        const { data } = await API.get(`/shops/slug/${slug}`);
         setShop(data.shop);
       } catch (error) {
         console.error(error);
