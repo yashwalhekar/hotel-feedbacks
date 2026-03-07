@@ -17,6 +17,7 @@ import {
   Stack,
   Rating,
   CircularProgress,
+  Divider,
 } from "@mui/material";
 
 export default function FeedbackPage() {
@@ -184,14 +185,13 @@ export default function FeedbackPage() {
               variant="subtitle2"
               align="center"
               sx={{
-                fontStyle: "italic",
                 color: "text.secondary",
-                mb: 4,
+                mb: 1,
               }}
             >
               “Where Every Guest Experience Matters.”
             </Typography>
-
+            <Divider sx={{ bgcolor: "black", mb: 2, opacity: "50%" }} />
             <form onSubmit={handleSubmit}>
               <Stack spacing={3}>
                 <TextField
@@ -199,6 +199,7 @@ export default function FeedbackPage() {
                   fullWidth
                   required
                   variant="outlined"
+                  size="small"
                   onChange={(e) => handleChange("customerName", e.target.value)}
                 />
 
@@ -206,6 +207,7 @@ export default function FeedbackPage() {
                   label="Mobile Number"
                   fullWidth
                   variant="outlined"
+                  size="small"
                   onChange={(e) =>
                     handleChange("customerMobile", e.target.value)
                   }
@@ -216,6 +218,7 @@ export default function FeedbackPage() {
                   fullWidth
                   onChange={(e) => handleChange("orderType", e.target.value)}
                   sx={{ borderRadius: 2 }}
+                  size="small"
                 >
                   <MenuItem value="DINE-IN">Dine In</MenuItem>
                   <MenuItem value="TAKEAWAY">Takeaway</MenuItem>
