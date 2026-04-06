@@ -181,7 +181,7 @@ export default function FeedbackPage() {
             </Typography>
 
             {/* Tagline */}
-            <Typography
+            {/* <Typography
               variant="subtitle2"
               align="center"
               sx={{
@@ -190,7 +190,7 @@ export default function FeedbackPage() {
               }}
             >
               “Where Every Guest Experience Matters.”
-            </Typography>
+            </Typography> */}
             <Divider sx={{ bgcolor: "black", mb: 2, opacity: "50%" }} />
             <form onSubmit={handleSubmit}>
               <Stack spacing={3}>
@@ -213,7 +213,7 @@ export default function FeedbackPage() {
                   }
                 />
 
-                <Select
+                {/* <Select
                   value={formData.orderType}
                   fullWidth
                   onChange={(e) => handleChange("orderType", e.target.value)}
@@ -222,7 +222,7 @@ export default function FeedbackPage() {
                 >
                   <MenuItem value="DINE-IN">Dine In</MenuItem>
                   <MenuItem value="TAKEAWAY">Takeaway</MenuItem>
-                </Select>
+                </Select> */}
 
                 {/* Ratings Section */}
                 <Stack
